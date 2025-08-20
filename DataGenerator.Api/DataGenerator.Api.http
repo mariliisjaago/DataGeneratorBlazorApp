@@ -1,0 +1,6 @@
+@DataGenerator.Api_HostAddress = http://localhost:5123
+
+GET {{DataGenerator.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
