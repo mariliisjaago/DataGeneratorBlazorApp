@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataGeneratorBlazor", "DataGeneratorBlazor\DataGeneratorBlazor\DataGeneratorBlazor.csproj", "{A6AD34A3-02F5-4BDE-9036-9A5106E4BD53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataGeneratorBlazor", "DataGeneratorBlazor\DataGeneratorBlazor\DataGeneratorBlazor.csproj", "{A6AD34A3-02F5-4BDE-9036-9A5106E4BD53}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataGeneratorBlazor.Client", "DataGeneratorBlazor\DataGeneratorBlazor.Client\DataGeneratorBlazor.Client.csproj", "{704C11BA-F8EB-4887-93F5-2C971FBFCD58}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataGeneratorBlazor.Client", "DataGeneratorBlazor\DataGeneratorBlazor.Client\DataGeneratorBlazor.Client.csproj", "{704C11BA-F8EB-4887-93F5-2C971FBFCD58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataGenerator.Api", "DataGenerator.Api\DataGenerator.Api.csproj", "{8223D7F2-15D3-4983-B589-02F85BC4AB93}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataGenerator.Api", "DataGenerator.Api\DataGenerator.Api.csproj", "{8223D7F2-15D3-4983-B589-02F85BC4AB93}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{FD451D7E-B961-4A7E-8A53-20EB0D7A0E79}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\DataAccess.csproj", "{FD451D7E-B961-4A7E-8A53-20EB0D7A0E79}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataGeneratorServices", "DataGeneratorServices\DataGeneratorServices.csproj", "{8490473B-9AAA-4178-8AA9-7FFA92DD7074}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{FD451D7E-B961-4A7E-8A53-20EB0D7A0E79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD451D7E-B961-4A7E-8A53-20EB0D7A0E79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD451D7E-B961-4A7E-8A53-20EB0D7A0E79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8490473B-9AAA-4178-8AA9-7FFA92DD7074}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8490473B-9AAA-4178-8AA9-7FFA92DD7074}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8490473B-9AAA-4178-8AA9-7FFA92DD7074}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8490473B-9AAA-4178-8AA9-7FFA92DD7074}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

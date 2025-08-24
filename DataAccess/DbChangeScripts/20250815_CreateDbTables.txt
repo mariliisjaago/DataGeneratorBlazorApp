@@ -18,15 +18,9 @@ CREATE TABLE Address (
 	ON DELETE CASCADE
 );
 
-CREATE TABLE Hobby (
-	Id INT IDENTITY(1,1) PRIMARY KEY,
-	Name VARCHAR(100) NOT NULL
-);
-
-CREATE TABLE HobbyInPerson (
-    HobbyId INT NOT NULL,
+CREATE TABLE PersonHobbies (
     PersonId INT NOT NULL,
-    CONSTRAINT [PK_HobbyInPerson] PRIMARY KEY (HobbyId, PersonId),
-    CONSTRAINT [FK_HobbyInPerson_HobbyId] FOREIGN KEY (HobbyId) REFERENCES Hobby(Id) ON DELETE CASCADE,
-    CONSTRAINT [FK_HobbyInPerson_PersonId] FOREIGN KEY (PersonId) REFERENCES Person(Id) ON DELETE CASCADE
+	Hobby INT NOT NULL,
+    CONSTRAINT [PK_PersonHobbies] PRIMARY KEY (PersonId, Hobby),
+    CONSTRAINT [FK_PersonHobbies_PersonId] FOREIGN KEY (PersonId) REFERENCES Person(Id) ON DELETE CASCADE
 );

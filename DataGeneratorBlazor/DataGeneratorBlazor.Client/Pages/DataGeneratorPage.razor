@@ -1,0 +1,143 @@
+﻿@page "/datageneratorpage"
+@rendermode InteractiveAuto
+@using DataAccess.ApiModels
+@using DataAccess.Models.Dtos
+@using System.Net.Http
+@inject IHttpClientFactory httpClientFactory
+
+<PageTitle>DataGeneratorPage</PageTitle>
+
+<h1>Data generator</h1>
+
+<h4>Currently at: @handler</h4>
+
+<p>Please select your preferences and click on "Generate" to generate the sample data</p>
+
+<div class="row">
+    <div class="col-md-6">
+        <EditForm method="post" Model="GeneratorRequest" OnValidSubmit="GenerateData" FormName="generate" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+            <div class="mb-3">
+                <label for="datapointcount" class="form-label">Count of data points:</label>
+                <InputNumber id="datapointcount" @bind-Value="GeneratorRequest.DataPointCount" class="form-control" />
+                <ValidationMessage For="() => GeneratorRequest.DataPointCount" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="allowedfirstnames" class="form-label">Allowed first names (comma-separated):</label>
+                <InputTextArea id="allowedfirstnames" @bind-Value="GeneratorRequest.AllowedFirstNames" class="form-control" />
+                <ValidationMessage For="() => GeneratorRequest.AllowedFirstNames" class="text-danger" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Generate</button>
+        </EditForm>
+    </div>
+</div>
+
+
+<hr />
+
+<h4>Generated data</h4>
+@if (persons == null)
+{
+    <p><em>Waiting for data...</em></p>
+}
+else
+{
+    <p>Showing first 10 records, altogether generated @persons.Count records</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Date for birth</th>
+                <th>Hobbies</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var person in persons.Take(10))
+            {
+                <tr>
+                    <td>@person.FirstName</td>
+                    <td>@person.LastName</td>
+                    <td>@person.DateOfBirth.ToShortDateString()</td>
+                    <td>@GetShortenedHobbies(person.Hobbies.Select(h => h.ToString()).ToList())</td>
+                    <td>@person.Address?.StreetAddress, @person.Address?.City, @person.Address?.ZipCode, @person.Address?.Country.ToString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button class="btn btn-primary" @onclick="SaveData">Save sample data</button>
+
+    @if (!string.IsNullOrEmpty(StatusMessage))
+    {
+        <div class="@StatusCss">@StatusMessage</div>
+    }
+}
+
+
+
+@code {
+
+    [SupplyParameterFromForm]
+    public GeneratorRequest GeneratorRequest { get; set; } = new();
+    private string StatusMessage;
+    private string StatusCss;
+
+    List<PersonDto>? persons;
+    private async void GenerateData()
+    {
+        HttpClient httpClient = httpClientFactory.CreateClient("generator");
+        persons = await httpClient.GetFromJsonAsync<List<PersonDto>>($"api/generate?dataPointCount={GeneratorRequest.DataPointCount}&allowedFirstNames={GeneratorRequest.AllowedFirstNames}");
+        StateHasChanged();
+    }
+
+    private async Task GetPersons()
+    {
+        var httpClient = httpClientFactory.CreateClient("generator");
+        var httpResponseMessage = await httpClient.GetAsync("api/getall");
+    }
+
+    private async void SaveData()
+    {
+        HttpClient httpClient = httpClientFactory.CreateClient("generator");
+        var response = await httpClient.PostAsJsonAsync("api/save", persons);
+
+        if (response.IsSuccessStatusCode)
+        {
+            StatusMessage = "Saved successfully!";
+            StatusCss = "text-success";
+        }
+        else
+        {
+            StatusMessage = "Saving failed.";
+            StatusCss = "text-danger";
+        }
+        StateHasChanged();
+    }
+
+    string handler;
+    protected override void OnInitialized()
+    {
+        if (OperatingSystem.IsBrowser())
+        {
+            handler = "WASM";
+        }
+        else
+        {
+            handler = "Server";
+        }
+    }
+
+    private string GetShortenedHobbies(List<string> hobbies)
+    {
+        string hobbiesString = string.Join(",", hobbies);
+        int strLength = hobbiesString.Length;
+        int length = Math.Min(strLength, 35);
+        bool isShortened = length < strLength;
+
+        return $"{hobbiesString.Substring(0, length)}{(isShortened ? "..." : "")}";
+    }
+}

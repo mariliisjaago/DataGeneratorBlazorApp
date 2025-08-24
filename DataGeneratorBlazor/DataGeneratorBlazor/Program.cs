@@ -11,7 +11,14 @@ namespace DataGeneratorBlazor
 
             // Add services to the container.
             builder.Services.AddRazorComponents()
-                .AddInteractiveWebAssemblyComponents();
+                .AddInteractiveWebAssemblyComponents()
+                .AddInteractiveServerComponents();
+
+            builder.Services.AddHttpClient("generator", httpClient =>
+            {
+                httpClient.BaseAddress = new Uri("http://localhost:5123/");
+
+            });
 
             var app = builder.Build();
 
@@ -34,6 +41,7 @@ namespace DataGeneratorBlazor
 
             app.MapRazorComponents<App>()
                 .AddInteractiveWebAssemblyRenderMode()
+                .AddInteractiveServerRenderMode()
                 .AddAdditionalAssemblies(typeof(Counter).Assembly);
 
             app.Run();

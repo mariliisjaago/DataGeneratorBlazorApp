@@ -1,5 +1,10 @@
-using DataAccess.Models;
+using DataAccess;
+using DataAccess.ApiModels;
+using DataAccess.Context;
 using DataAccess.Models.Dtos;
+using DataGeneratorServices.Implementations;
+using DataGeneratorServices.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataGenerator.Api
@@ -10,36 +15,32 @@ namespace DataGenerator.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             builder.Services.AddAuthorization();
-
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            //builder.Services.AddEndpointsApiExplorer();
-            //builder.Services.AddSwaggerGen();
             builder.Services.AddCors();
 
             builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+
+            builder.Services.AddScoped<IDataGeneratorService, DataGeneratorService>();
+            builder.Services.AddScoped<IPersonRepository, PersonRepository>();
+            builder.Services.AddScoped<IDataSaverService, DataSaverService>();
+
 
             var app = builder.Build();
 
             app.UseCors(policy =>
                 policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
-            app.MapGet("/api/persons", async (AppDbContext db) =>
+            app.MapGet("/api/getall", async (AppDbContext db) =>
             {
                 var people = await db.Person
-                    .Include(p => p.Hobbies)
+                    .Include(p => p.PersonHobbies)
                     .Include(p => p.Address)
                     .Select(p => new PersonDto
                     {
-                        Id = p.Id,
                         FirstName = p.FirstName,
+                        LastName = p.LastName,
                         DateOfBirth = p.DateOfBirth,
-                        Hobbies = p.Hobbies.Select(h => new HobbyDto
-                        {
-                            Id = h.Id,
-                            Name = h.Name
-                        }).ToList(),
+                        Hobbies = p.PersonHobbies.Select(h => h.Hobby).ToList(),
                         Address = new AddressDto()
                         {
                             StreetAddress = p.Address.StreetAddress,
@@ -52,58 +53,22 @@ namespace DataGenerator.Api
                 return Results.Ok(people);
             });
 
+            app.MapGet("/api/generate", (int dataPointCount, string? allowedFirstNames, [FromServices] IDataGeneratorService service) =>
+            {
+                var request = new GeneratorRequest() { DataPointCount = dataPointCount, AllowedFirstNames = allowedFirstNames };
+                var data = service.GenerateSampleData(request);
+                return Results.Ok(data);
+            });
 
-            // Configure the HTTP request pipeline.
-            //if (app.Environment.IsDevelopment())
-            //{
-            //    app.UseSwagger();
-            //    app.UseSwaggerUI();
-            //}
+            app.MapPost("/api/save", async (List<PersonDto> persons, [FromServices] IDataSaverService service, AppDbContext db) =>
+            {
+                service.Save(persons);
+            });
 
             app.UseHttpsRedirection();
             app.UseAuthorization();
 
             app.Run();
-        }
-
-        public class AppDbContext : DbContext
-        {
-            public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-            public DbSet<Person> Person => Set<Person>();
-            public DbSet<Address> Address => Set<Address>();
-            public DbSet<Hobby> Hobby => Set<Hobby>();
-
-            protected override void OnModelCreating(ModelBuilder modelBuilder)
-            {
-                modelBuilder.Entity<Person>()
-                    .HasMany(p => p.Hobbies)
-                    .WithMany(h => h.Persons)
-                    .UsingEntity<Dictionary<string, object>>(
-                        "HobbyInPerson",
-                        j => j.HasOne<Hobby>()
-                              .WithMany()
-                              .HasForeignKey("HobbyId")
-                              .OnDelete(DeleteBehavior.Cascade),
-                        j => j.HasOne<Person>()
-                              .WithMany()
-                              .HasForeignKey("PersonId")
-                              .OnDelete(DeleteBehavior.Cascade),
-                        j =>
-                        {
-                            j.HasKey("HobbyId", "PersonId");
-                        }
-                    );
-
-                modelBuilder.Entity<Person>()
-                    .HasOne(p => p.Address)
-                    .WithOne(a => a.Person)
-                    .HasForeignKey<Address>(a => a.PersonId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                modelBuilder.Entity<Address>()
-                    .Property(a => a.Country)
-                    .HasConversion<int>();
-            }
         }
     }
 }
