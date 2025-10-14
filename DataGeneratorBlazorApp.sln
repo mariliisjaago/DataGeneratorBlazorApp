@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataGeneratorServices", "DataGeneratorServices\DataGeneratorServices.csproj", "{8490473B-9AAA-4178-8AA9-7FFA92DD7074}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceDefaults", "ServiceDefaults\ServiceDefaults.csproj", "{E8BFA8A9-4135-475D-9F94-0243B3F10DC7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{8490473B-9AAA-4178-8AA9-7FFA92DD7074}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8490473B-9AAA-4178-8AA9-7FFA92DD7074}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8490473B-9AAA-4178-8AA9-7FFA92DD7074}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8BFA8A9-4135-475D-9F94-0243B3F10DC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8BFA8A9-4135-475D-9F94-0243B3F10DC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8BFA8A9-4135-475D-9F94-0243B3F10DC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8BFA8A9-4135-475D-9F94-0243B3F10DC7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

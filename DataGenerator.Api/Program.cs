@@ -14,6 +14,7 @@ namespace DataGenerator.Api
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.AddServiceDefaults();
 
             builder.Services.AddAuthorization();
             builder.Services.AddCors();
@@ -26,6 +27,7 @@ namespace DataGenerator.Api
 
 
             var app = builder.Build();
+            app.MapDefaultEndpoints();
 
             app.UseCors(policy =>
                 policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
