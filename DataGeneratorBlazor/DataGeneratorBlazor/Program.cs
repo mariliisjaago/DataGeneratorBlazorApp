@@ -17,7 +17,8 @@ namespace DataGeneratorBlazor
 
             builder.Services.AddHttpClient("generator", httpClient =>
             {
-                httpClient.BaseAddress = new Uri("http://localhost:5123/");
+                var url = builder.Configuration["Endpoint"] ?? throw new Exception("API endpoint not configured in appsettings");
+                httpClient.BaseAddress = new Uri(url);
 
             });
 
